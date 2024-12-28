@@ -1,0 +1,28 @@
+CREATE TABLE llm (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE tariff (
+    id SERIAL PRIMARY KEY,
+    llm_id INTEGER REFERENCES llm(id) ON DELETE CASCADE,
+    price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE availability (
+    id SERIAL PRIMARY KEY,
+    llm_id INTEGER REFERENCES llm(id) ON DELETE CASCADE,
+    status BOOLEAN NOT NULL
+);
+
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE llm_tags (
+    llm_id INTEGER REFERENCES llm(id) ON DELETE CASCADE,
+    tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE,
+    PRIMARY KEY (llm_id, tag_id)
+);
