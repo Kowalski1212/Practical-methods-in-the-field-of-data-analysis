@@ -1,60 +1,99 @@
-# LLM Backend Service
+# Crypto Price Fetcher
 
 ## Project Description
 
-This project is a backend service for searching and filtering large language models (LLMs). The service provides an API for searching models based on various filters, such as name, description, price, and availability. It uses FastAPI for creating the web service and PostgreSQL for storing model data.
+This is a Python script that retrieves the current price of a cryptocurrency in USD using the CoinMarketCap API. It accepts an API key and the symbol of the cryptocurrency as input and returns its price in USD.
 
-## Purpose
+## Features
 
-The project was developed to provide access to information about language models through an API. It can be integrated with various frontend applications, such as websites or mobile apps, where searching for models with filtering options like price, availability, and description is needed.
+- Fetches the latest price of a cryptocurrency using the CoinMarketCap API.
+- Handles errors gracefully with clear messages for debugging.
+- Allows for easy customization by changing the cryptocurrency symbol and API key.
 
-## How to Run the Project
+## Requirements
 
-1. **Clone the repository:**
+- Python 3.6 or later
+- Requests library
 
-    ```bash
-    git clone https://github.com/Kowalski1212/Web-Service.git
-    cd llm-backend-service
-    ```
+## Installation
 
-2. **Create and activate a virtual environment (required for Python):**
-
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows, use venv\Scripts\activate
-    ```
-
-3. **Install dependencies:**
+1. Clone the repository:
 
     ```bash
-    pip install -r requirements.txt
+    git clone https://github.com/Kowalski1212/Crypto-Analysis/crypto-price-fetcher.git
+    cd crypto-price-fetcher
     ```
 
-4. **Set up PostgreSQL database.**
-
-    - Ensure you have PostgreSQL installed and configured.
-    - Create a database and use the `PostGre.sql` script to create the required tables.
-
-5. **Run the server:**
+2. Install the required dependencies:
 
     ```bash
-    uvicorn main:app --reload
+    pip install requests
     ```
 
-    The server will be available at: `http://127.0.0.1:8000`
+## Usage
 
-## Example API Request
+1. Obtain a free API key from [CoinMarketCap](https://coinmarketcap.com/api/).
 
-To filter language models, you can make HTTP GET requests with various parameters. Example request:
+2. Replace the placeholder API key in the script with your own:
 
-GET http://127.0.0.1:8000/filter_models?name=Model A&minPrice=50&availability=true
- 
- Example response:
+    ```python
+    api_key = 'your_api_key_here'
+    ```
 
-```json
-[
-  {
-    "name": "Model A",
-    "description": "A large language model with advanced NLP capabilities"
-  }
-]
+3. Set the cryptocurrency symbol (e.g., `BTC`, `ETH`, `TON`) in the script:
+
+    ```python
+    symbol = 'TON'
+    ```
+
+4. Run the script:
+
+    ```bash
+    python crypto_price_fetcher.py
+    ```
+
+5. Example output:
+
+    ```
+    Стоимость TON в USD: 2.34567
+    ```
+
+## Example Code
+
+Here’s the core function used in the script:
+
+```python
+import requests
+
+def get_crypto_price(api_key, symbol):
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+    headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': api_key,
+    }
+    parameters = {
+        'symbol': symbol,
+        'convert': 'USD'
+    }
+
+    response = requests.get(url, headers=headers, params=parameters)
+
+    try:
+        data = response.json()
+    except ValueError:
+        print("Ошибка преобразования ответа в JSON.")
+        print(f"Статус-код ответа: {response.status_code}")
+        print(f"Ответ от API: {response.text}")
+        return None
+
+    if response.status_code == 200:
+        try:
+            price = data['data'][symbol]['quote']['USD']['price']
+            return price
+        except KeyError:
+            print("Ошибка извлечения данных. Проверь параметры запроса.")
+            print(f"Ответ от API: {data}")
+            return None
+    else:
+        print(f"Ошибка: {data['status']['error_message']}")
+        return None
