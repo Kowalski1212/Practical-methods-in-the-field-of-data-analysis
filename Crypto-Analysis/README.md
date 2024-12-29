@@ -97,12 +97,3 @@ def get_crypto_price(api_key, symbol):
     else:
         print(f"Error: {data['status']['error_message']}")
         return None
-
-
-# Example usage
-api_key = 'your_api_key_here'
-symbol = 'TON'
-price = get_crypto_price(api_key, symbol)
-
-if price:
-    print(f"The price of {symbol} in USD: {round(price, 5)}")
