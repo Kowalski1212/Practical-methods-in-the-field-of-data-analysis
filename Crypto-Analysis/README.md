@@ -20,7 +20,7 @@ This is a Python script that retrieves the current price of a cryptocurrency in 
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/Kowalski1212/Crypto-Analysis/crypto-price-fetcher.git
+    git clone https://github.com/Kowalski1212/Practical-methods-in-the-field-of-data-analysis/blob/main/Crypto-Analysis
     cd crypto-price-fetcher
     ```
 
@@ -60,7 +60,7 @@ This is a Python script that retrieves the current price of a cryptocurrency in 
 
 ## Example Code
 
-Here’s the core function used in the script:
+Here is the main script used to fetch cryptocurrency prices:
 
 ```python
 import requests
@@ -81,9 +81,9 @@ def get_crypto_price(api_key, symbol):
     try:
         data = response.json()
     except ValueError:
-        print("Ошибка преобразования ответа в JSON.")
-        print(f"Статус-код ответа: {response.status_code}")
-        print(f"Ответ от API: {response.text}")
+        print("Error parsing the API response to JSON.")
+        print(f"Response status code: {response.status_code}")
+        print(f"API Response: {response.text}")
         return None
 
     if response.status_code == 200:
@@ -91,9 +91,18 @@ def get_crypto_price(api_key, symbol):
             price = data['data'][symbol]['quote']['USD']['price']
             return price
         except KeyError:
-            print("Ошибка извлечения данных. Проверь параметры запроса.")
-            print(f"Ответ от API: {data}")
+            print("Error extracting price data. Check the request parameters.")
+            print(f"API Response: {data}")
             return None
     else:
-        print(f"Ошибка: {data['status']['error_message']}")
+        print(f"Error: {data['status']['error_message']}")
         return None
+
+
+# Example usage
+api_key = 'your_api_key_here'
+symbol = 'TON'
+price = get_crypto_price(api_key, symbol)
+
+if price:
+    print(f"The price of {symbol} in USD: {round(price, 5)}")

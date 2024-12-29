@@ -13,7 +13,7 @@ The project was developed to provide access to information about language models
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/Kowalski1212/Web-Service.git
+    git clone https://github.com/Kowalski1212/Practical-methods-in-the-field-of-data-analysis/tree/main/WEB_Service
     cd llm-backend-service
     ```
 
